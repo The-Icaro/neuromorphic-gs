@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 from app.routers import root
 from app.routers import health_check
 from app.routers import ingest
+from app.routers import data
 from app.database.models import Base
 from app.database.connection import get_connection_string
 
@@ -44,3 +45,4 @@ app.include_router(health_check.router)
 app_v1.include_router(root.router, include_in_schema=False)
 app_v1.include_router(health_check.router, include_in_schema=False)
 app_v1.include_router(ingest.router, prefix="/ingest")
+app_v1.include_router(data.router, prefix="/data")
