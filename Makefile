@@ -9,7 +9,7 @@ ifeq ($(UNAME_S),Darwin)
     DOCKER_USER=
 endif
 
-local/install: generate-default-env-file
+local/install:
 	pipenv install --dev --skip-lock
 
 local/lint:
@@ -39,37 +39,37 @@ local/run:
 	python run.py
 
 
-docker/build: generate-default-env-file
-	CURRENT_UID=${DOCKER_USER} docker-compose build ${APP_NAME}
+docker/build:
+	docker-compose build ${APP_NAME}
 
 docker/up:
-	CURRENT_UID=${DOCKER_USER} docker-compose up -d
+	docker-compose up -d
 
 docker/postgres/up:
-	CURRENT_UID=${DOCKER_USER} docker-compose up -d postgres-db
+	docker-compose up -d postgres-db
 
 docker/down:
-	CURRENT_UID=${DOCKER_USER} docker-compose down --remove-orphans
+	docker-compose down --remove-orphans
 
 docker/lint:
-	CURRENT_UID=${DOCKER_USER} docker-compose run ${APP_NAME} black --check app/
-	CURRENT_UID=${DOCKER_USER} docker-compose run ${APP_NAME} flake8 app/
+	docker-compose run ${APP_NAME} black --check app/
+	docker-compose run ${APP_NAME} flake8 app/
 
 docker/lint/fix:
 	docker-compose run ${APP_NAME} run black app/
 
 docker/check-packages:
-	CURRENT_UID=${DOCKER_USER} docker-compose run -e PIPENV_PYUP_API_KEY="" ${APP_NAME} pipenv check --system
+	docker-compose run -e PIPENV_PYUP_API_KEY="" ${APP_NAME} pipenv check --system
 
 docker/bandit:
-	CURRENT_UID=${DOCKER_USER} docker-compose run ${APP_NAME} bandit -r . app *.py
+	docker-compose run ${APP_NAME} bandit -r . app *.py
 
 docker/verify:
 	make docker/lint
 	make docker/bandit
 
 docker/test:
-	CURRENT_UID=${DOCKER_USER} docker-compose run -e ENV_FOR_DYNACONF=test ${APP_NAME} \
+	docker-compose run -e ENV_FOR_DYNACONF=test ${APP_NAME} \
 	python -m pytest -s -c tests/pytest.ini \
 	--pyargs ./tests -v  \
 	--cov-fail-under 50 --cov-report xml \
@@ -77,13 +77,13 @@ docker/test:
 	--cov-report html --cov ./app
 
 docker/run:
-	CURRENT_UID=${DOCKER_USER} docker-compose run --service-port ${APP_NAME} python run.py
+	docker-compose run --service-port ${APP_NAME} python run.py
 
 docker/migrations/generate:
-	CURRENT_UID=${DOCKER_USER} docker-compose run ${APP_NAME} alembic revision --autogenerate
+	docker-compose run ${APP_NAME} alembic revision --autogenerate
 
 docker/migrations/upgrade:
-	CURRENT_UID=${DOCKER_USER} docker-compose run ${APP_NAME} alembic upgrade head
+	docker-compose run ${APP_NAME} alembic upgrade head
 
 image/build:
 	docker build . --target production -t ${IMAGE_NAME}:${VERSION}
