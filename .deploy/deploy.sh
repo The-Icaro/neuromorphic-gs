@@ -13,8 +13,8 @@ if [[ "$namespace" ]]; then
     microk8s kubectl -n $namespace apply -f $deployment_file
 
     # Rollout status
-    microk8s kubectl -n $namespace rollout status deployments  neuromorphic-sprint-three || {
-        microk8s kubectl -n $namespace rollout undo deployments neuromorphic-sprint-three; exit 1;
+    microk8s kubectl -n $namespace rollout status deployments  neuromorphic-gs || {
+        microk8s kubectl -n $namespace rollout undo deployments neuromorphic-gs; exit 1;
     }
 else
   echo "Missing values! You must define: NAMESPACE!"
