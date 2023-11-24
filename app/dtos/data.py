@@ -1,13 +1,14 @@
 from pydantic import BaseModel
-from datetime import date
+from datetime import datetime
+from typing import Optional
 
 
 class DataResponse(BaseModel):
-    id: int
-    temperature: float
-    pulse_rate: float
-    air_quality: float
-    created_at: date
+    id: Optional[int] = None
+    temperature: Optional[float] = None
+    pulse_rate: Optional[float] = None
+    air_quality: Optional[float] = None
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
