@@ -2,12 +2,11 @@ version: "3.4"
 services:
   app:
     tty: true
-    image: "the-icaro/neuromorphic-gs"
+    image: "theicaro/neuromorphic-gs"
     stdin_open: true
     build:
       context: .
       target: "development"
-    command: python run.py
     volumes:
       - ".:/app"
     environment:
