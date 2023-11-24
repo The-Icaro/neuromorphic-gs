@@ -24,6 +24,8 @@ services:
 
   postgres-db:
     image: postgres:16
+    volumes:
+      - ".:/db"
     ports:
       - "5432:5432"
     environment:
