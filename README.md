@@ -116,3 +116,14 @@ This quick guide provides a summarized version of the steps to deploy your syste
 - **Kubernetes Cluster:** Access to a Kubernetes cluster ([microK8s](https://microk8s.io/) assumed).
 
 - **kubectl:** Installed and configured via [microk8s](https://microk8s.io/).
+
+#### Run Deployment Script:
+
+We provide a shell script to carry out all applications of manifests in Kubernetes, you can check the file [here](.deploy/deploy.sh)
+
+If you want to look at the manifests that we apply to Kubernetes, you can view the YAML file [here](.deploy/deployment.yaml)
+
+``` sh
+chmod +x .deploy/deploy.sh
+bash ./.deploy/deploy.sh <namespace>
+```
