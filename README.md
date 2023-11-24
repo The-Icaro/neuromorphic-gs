@@ -28,6 +28,16 @@ _Please pay attention on **pre-requisites** resources that you must install/conf
 - `/v1/docs`: Swagger Docs V1
 - `/v1/redoc`: Redoc Docs V1
 - `/health-check`: Verify sure the application is up
+- `/ingest/gather-data`: Route to get data from Thingspeak
+- `/data/get-data`: Route to query data from database
+
+#### Route Params
+
+`/data/get-data`: This route have 3 params
+
+- fields: Is responsible to query te selected fields, just like an Graphql, where you specify which ones you need. The available fields are -> id, pulse_rate, temperature, air_quality, created_at.
+- page: Is the param to paginate the response, where the default value is 1. It needs to be grater than 1
+- page_size: Is the param to paginate, where you specify the number of items on the page. The default value is 10. It needs to be grater than 1
 
 ## Running Docker
 
