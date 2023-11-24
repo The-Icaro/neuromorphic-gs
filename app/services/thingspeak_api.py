@@ -12,7 +12,7 @@ from app.dtos.thingspeak import ThingspeakResponse
 class ThingspeakApiClient(BaseApiClient):
     async def get_data_chunk(self, start: int, end: int) -> List[ThingspeakResponse]:
         response = self.get(
-            "/channels/1293177/feeds.json",
+            "/channels/940553/feeds.json",
             params={"start": start, "end": end},
         )
         if response.get("error"):
