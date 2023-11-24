@@ -1,12 +1,13 @@
 version: "3.4"
 services:
-  neuromorphic-sprint-three:
+  app:
     tty: true
     image: "eduardomatoss/neuromorphic-sprint-three"
     stdin_open: true
     build:
       context: .
       target: "development"
+    command: python run.py
     volumes:
       - ".:/app"
     environment:
