@@ -3,9 +3,12 @@ from logging import getLogger
 from fastapi import FastAPI
 from dynaconf import settings
 from starlette_exporter import PrometheusMiddleware, handle_metrics
+from sqlalchemy import create_engine
 
 from app.routers import root
 from app.routers import health_check
+from app.database.models import Base
+from app.database.connection import get_connection_string
 
 
 logger = getLogger()
@@ -22,6 +25,13 @@ app_v1 = FastAPI(
     version="v1.0.0",
 )
 
+@app.on_event("startup")
+def startup_event():
+    try:
+        engine = create_engine(get_connection_string())
+        Base.metadata.create_all(bind=engine)
+    except Exception as error:
+        logger.error(error)
 
 app.mount("/v1", app_v1)
 
