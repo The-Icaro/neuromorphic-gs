@@ -3,6 +3,7 @@ from json import loads, dumps
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from typing import List
+from datetime import datetime, timedelta
 
 from app.clients.base_api import BaseApiClient
 from app.dtos.thingspeak import ThingspeakResponse
@@ -10,10 +11,13 @@ from app.dtos.thingspeak import ThingspeakResponse
 
 @dataclass
 class ThingspeakApiClient(BaseApiClient):
-    async def get_data_chunk(self, start: int, end: int) -> List[ThingspeakResponse]:
+    async def get_data_chunk(self, start: datetime, end: datetime) -> List[ThingspeakResponse]:
+        start_str = start.strftime("%Y-%m-%d %H:%M:%S")
+        end_str = end.strftime("%Y-%m-%d %H:%M:%S")
+        
         response = self.get(
             "/channels/940553/feeds.json",
-            params={"start": start, "end": end},
+            params={"start": start_str, "end": end_str},
         )
         if response.get("error"):
             raise response.get("error")
@@ -28,14 +32,20 @@ class ThingspeakApiClient(BaseApiClient):
 
         return ThingspeakResponse.schema().loads(cleaned_response)
 
-    async def get_data(self, size: int = 10000, chunk_size: int = 100) -> List[ThingspeakResponse]:
+    async def get_data(self, size: int = 10000, chunk_loop: int = 5) -> List[ThingspeakResponse]:
         with ThreadPoolExecutor(max_workers=5) as executor:
             loop = asyncio.get_event_loop()
             tasks = []
 
-            for start in range(0, size, chunk_size):
-                end = min(start + chunk_size, size)
-                tasks.append(loop.run_in_executor(executor, self.get_data_chunk, start, end))
+            current_date = datetime.today()
+
+            for _ in range(0, size, chunk_loop):
+                end_date = current_date
+                start_date = current_date - timedelta(hours=chunk_loop)
+
+                current_date = start_date
+
+                tasks.append(loop.run_in_executor(executor, self.get_data_chunk, start_date, end_date))
 
             responses = await asyncio.gather(*tasks)
 
